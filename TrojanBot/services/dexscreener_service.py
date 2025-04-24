@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 # request headers
 headers = {"User-Agent": "Mozilla/5.0", "Content-Type": "application/json"}
 
+
 def fetch_token_pair_details(url, chainId, tokenAddress):
     url = f"{url}/token-pairs/v1/{chainId}/{tokenAddress}"
 
@@ -30,12 +31,12 @@ def fetch_token_pair_details(url, chainId, tokenAddress):
         return {}
 
 
-def fetch_dexscreener_tokens(url):
+def fetch_dexscreener_tokens(src_url):
     """
     Fetch token data from dexscreener.com.
     (Update the URL and response parsing as needed based on the actual API.)
     """
-    url = f"{url}/token-profiles/latest/v1"
+    url = f"{src_url}/token-profiles/latest/v1"
     try:
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
@@ -44,9 +45,8 @@ def fetch_dexscreener_tokens(url):
         # Assume that token pairs are listed under a key called "pairs"
         for token in data:
             token["source"] = "dexscreener"
-            logging.info(f"Fetching {token['tokenAddress']} details.")
             pairsAddress = fetch_token_pair_details(
-                url, token["chainId"], token["tokenAddress"]
+                src_url, token["chainId"], token["tokenAddress"]
             )
             token.update(pairsAddress)
 

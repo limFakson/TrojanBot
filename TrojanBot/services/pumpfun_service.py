@@ -4,12 +4,12 @@ import logging
 # Set up basic logging
 logger = logging.getLogger(__name__)
 
-def fetch_pump_fun_tokens():
+def fetch_pump_fun_tokens(url):
     """
     Fetch token data from pump.fun.
     (Update the URL and response parsing as needed based on the actual API.)
     """
-    url = "https://pump.fun/api/tokens"  # Example endpoint; update  needed.
+    url = f"{url}/tokens"  # Example endpoint; update  needed.
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()

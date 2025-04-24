@@ -3,29 +3,31 @@ import os
 
 from dotenv import load_dotenv
 
-from utils.data_formater import standardize_token, analyze_token
-from services.pumpfun_service import fetch_pump_fun_tokens
-from services.dexscreener_service import fetch_dexscreener_tokens
-from services.rugcheck_service import fetch_rugcheck_score
+from .data_formater import standardize_token, analyze_token
+from ..services.pumpfun_service import fetch_pump_fun_tokens
+from ..services.dexscreener_service import fetch_dexscreener_tokens
+from ..services.rugcheck_service import fetch_rugcheck_score
+from ..config.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
 
-class Distribution():
+
+class Distribution:
     def __init__(self):
-        self.enviroment = {}
+        self.enviroment = dict()
         self.formated_tokens = []
         self.coin_token = []
         self.results = []
-        
-        # Load essential functions
-        self.enviroment()
-        self.dist()
-        
 
-    def enviroment(self):
+        # Load essential functions
+        setup_logging()
+        self.enviroments()
+
+    def enviroments(self):
         REQUIRED_VARS = [
             "DEX_API_URL",
             "PUMPFUN_URL",
+            "RUGCHECK_API_URL",
             # "TWITTER_API_KEY",
             # "TWITTER_API_SECRET",
             # "TWITTER_ACCESS_TOKEN",
@@ -69,25 +71,16 @@ class Distribution():
         logging.info(f"Found {len(solana_tokens)} Solana-based tokens.")
 
         # Analyze each token and collect results.
-        results = []
         for token in solana_tokens:
-            score = analyze_token(token)
-            results.append(
-                {
-                    "name": token.get("name"),
-                    "symbol": token.get("symbol"),
-                    "upside_score": score,
-                }
+            token["upside_score"] = analyze_token(token)
+            token["rug_score"], analyzed_risks = fetch_rugcheck_score(
+                self.enviroment["RUGCHECK_API_URL"], token.get("address", None)
             )
 
         # Sort results by the upside score in descending order.
-        results.sort(key=lambda x: x["upside_score"], reverse=True)
+        # results.sort(key=lambda x: x["upside_score"], reverse=True)
+        logger.info(
+            f"Found {len(solana_tokens)} tokens with a potential upside score. which are: {solana_tokens}"
+        )
 
-        # Display the tokens with their scores.
-        print("\n--- Solana Token Upside Scores ---")
-        for r in results:
-            print(f"{r['name']} ({r['symbol']}): Upside Score = {r['upside_score']:.2f}")
-            with open("token.txt", "a") as f:
-                f.write(
-                    f"{r['name']} ({r['symbol']}): Upside Score = {r['upside_score']:.2f} \n"
-                )
+        return solana_tokens

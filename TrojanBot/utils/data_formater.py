@@ -1,4 +1,3 @@
-
 def extract_features(token):
     """
     Extract numeric features from the standardized token data.
@@ -53,8 +52,13 @@ def standardize_token(token, source):
         # Example mapping – update the keys as needed.
         return {
             "name": token.get("name", "Unknown"),
+            "icon": token.get("icon", "img.png"),
+            "description": token.get("description", "N/A"),
+            "address": token.get("address", "N/A"),
             "symbol": token.get("symbol", "N/A"),
             "chain": token.get("chain", "").lower(),  # e.g., "solana" expected
+            "price_usd": token.get("priceUsd", 0),
+            "market_cap": token.get("marketCap", 0),
             "volume": float(token.get("volume", 0)),
             "price_change": float(token.get("priceChange", 0)),
             "liquidity": float(token.get("liquidity", 0)),
@@ -63,8 +67,13 @@ def standardize_token(token, source):
         # Example mapping – update the keys as needed.
         return {
             "name": token.get("name", "Unknown"),
+            'icon': token.get("icon", "img.png"),
+            'description': token.get("description", "N/A"),
             "symbol": token.get("symbol", "N/A"),
+            "address": token.get("tokenAddress", "N/A"),
             "chain": token.get("chainId", "").lower(),  # e.g., "solana" expected
+            "price_usd": token.get("priceUsd", 0),
+            'market_cap': token.get("marketCap", 0),
             "volume": token.get("volume", {}),
             "price_change": token.get("priceChange", {}),
             "liquidity": token.get("liquidity", {}),

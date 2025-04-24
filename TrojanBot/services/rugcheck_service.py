@@ -22,17 +22,17 @@ def fetch_rugcheck_score(url, address):
         return rug_score, analyzed_risk
     except Exception as e:
         logging.error(f"Error fetching RugCheck score for {address}: {e}")
-        return None
+        return None, None
 
-def analyze_risk(risks:list):
+
+def analyze_risk(risks: list):
     """
     Analyze the risk score and return a message.
     """
     coin_risks = {}
     for risk in risks:
-        coin_risks[risk['name']] = {
-            'score': risk['score'],
-            'description': risk['description'],
-            'level': risk['level'],
+        coin_risks[risk["name"]] = {
+            "score": risk["score"],
+            "description": risk["description"],
+            "level": risk["level"],
         }
-    
