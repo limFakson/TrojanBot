@@ -1,0 +1,11 @@
+venv/
+
+logs/
+
+__pycache__/
+
+.env
+
+data.txt
+data.json
+token.txt
