@@ -1,3 +1,5 @@
+import base58
+
 def extract_features(token):
     """
     Extract numeric features from the standardized token data.
@@ -80,3 +82,22 @@ def standardize_token(token, source):
         }
     else:
         return {}
+
+
+def base58_to_32byte(base58_string):
+    """
+    Converts a Base58 encoded string to a 32-byte representation.
+
+    Args:
+        base58_string: The Base58 encoded string.
+
+    Returns:
+        A 32-byte string, or None if the input is invalid.
+    """
+    try:
+        decoded = base58.b58decode(base58_string)
+        if len(decoded) != 32:
+            return None
+        return decoded
+    except ValueError:
+        return None
