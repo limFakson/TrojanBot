@@ -12,7 +12,6 @@ def fetch_token_pair_details(url, chainId, tokenAddress):
 
     try:
         response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
         data = response.json()
 
         for d in data:

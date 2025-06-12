@@ -13,6 +13,7 @@ def fetch_rugcheck_score(url, address):
     Adjust the URL and JSON keys based on the actual API.
     """
     url = f"{url}/tokens/{address}/report"
+    return None, None
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()

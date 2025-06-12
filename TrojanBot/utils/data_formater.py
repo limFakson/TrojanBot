@@ -8,15 +8,16 @@ def extract_features(token):
     try:
         volume = token.get("volume", {})
         price_change = token.get("price_change", {})
-        liquidity = token.get("liquidity", {})
-        print(volume)
-        print(liquidity)
-        print(price_change)
+        liquidity = token.get("liquidity")
+
         # Extract specific values with defaults to 0 if missing
         vol_24h = volume.get("h24", 0)  # 24-hour volume
         price_change_1h = price_change.get("h1", 0)  # Price change in 1 hour
-        liquidity_usd = liquidity.get("usd", 0)  # Liquidity in USD
-
+        if "usd" in liquidity:
+            liquidity_usd = liquidity.get("usd")
+        else:
+            liquidity_usd = 0
+        
         return [vol_24h, price_change_1h, liquidity_usd]
     except Exception as e:
         print(f"Failes to fetch features: {e}")
@@ -43,45 +44,6 @@ def analyze_token(token):
     features = extract_features(token)
     score = dummy_ai_score(features)
     return score
-
-
-def standardize_token(token, source):
-    """
-    Convert token data from a given source into a standardized format.
-    Adjust the keys based on the actual response structure.
-    """
-    if source == "pump.fun":
-        # Example mapping – update the keys as needed.
-        return {
-            "name": token.get("name", "Unknown"),
-            "icon": token.get("icon", "img.png"),
-            "description": token.get("description", "N/A"),
-            "address": token.get("address", "N/A"),
-            "symbol": token.get("symbol", "N/A"),
-            "chain": token.get("chain", "").lower(),  # e.g., "solana" expected
-            "price_usd": token.get("priceUsd", 0),
-            "market_cap": token.get("marketCap", 0),
-            "volume": float(token.get("volume", 0)),
-            "price_change": float(token.get("priceChange", 0)),
-            "liquidity": float(token.get("liquidity", 0)),
-        }
-    elif source == "dexscreener":
-        # Example mapping – update the keys as needed.
-        return {
-            "name": token.get("name", "Unknown"),
-            'icon': token.get("icon", "img.png"),
-            'description': token.get("description", "N/A"),
-            "symbol": token.get("symbol", "N/A"),
-            "address": token.get("tokenAddress", "N/A"),
-            "chain": token.get("chainId", "").lower(),  # e.g., "solana" expected
-            "price_usd": token.get("priceUsd", 0),
-            'market_cap': token.get("marketCap", 0),
-            "volume": token.get("volume", {}),
-            "price_change": token.get("priceChange", {}),
-            "liquidity": token.get("liquidity", {}),
-        }
-    else:
-        return {}
 
 
 def base58_to_32byte(base58_string):
